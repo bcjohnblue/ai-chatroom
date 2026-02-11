@@ -33,8 +33,7 @@ import ChatInput from './ChatInput.vue'
 const {
   isOpen,
   isThinking,
-  hasConversation,
-  showSuggestionsAfterError,
+  isTypingResponse,
   suggestedQuestions,
   close,
   sendMessage,
@@ -43,10 +42,7 @@ const {
 const chatInputRef = ref(null)
 const chatMessagesRef = ref(null)
 
-const showSuggestions = computed(() => {
-  if (isThinking.value) return false
-  return !hasConversation.value || showSuggestionsAfterError.value
-})
+const showSuggestions = computed(() => !isThinking.value && !isTypingResponse.value)
 
 function handleSend(text) {
   sendMessage(text)
@@ -81,7 +77,7 @@ function handleSuggestionClick(question) {
   flex-direction: column;
   gap: 6px;
   padding: 0 16px 8px;
-  max-height: 200px;
+  max-height: 125px;
   overflow-y: auto;
 }
 

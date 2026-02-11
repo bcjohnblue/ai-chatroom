@@ -42,6 +42,7 @@ import { ref, computed, onMounted } from 'vue'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import { useTypingEffect } from 'src/composables/useTypingEffect'
+import { useChat } from 'src/composables/useChat'
 
 const props = defineProps({
   message: {
@@ -51,6 +52,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['typing-update', 'typing-complete'])
+
+const { markTypingDone } = useChat()
 
 // Configure marked for safe rendering
 marked.setOptions({
@@ -70,6 +73,7 @@ const { displayedText, isTyping, startTyping } = useTypingEffect({
     typingDone.value = true
     // Mark message as typed so re-mount won't re-trigger animation
     props.message.needsTyping = false
+    markTypingDone()
     emit('typing-complete')
   },
 })

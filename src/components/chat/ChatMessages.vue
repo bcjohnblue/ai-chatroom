@@ -12,9 +12,9 @@
     <!-- Thinking indicator -->
     <ThinkingIndicator v-if="isThinking" />
 
-    <!-- Suggested questions (shown when no real conversation yet) -->
-    <div v-if="!hasConversation && !isThinking" class="chat-messages__suggestions">
-      <div class="chat-messages__upload" v-if="messages.length <= 1">
+    <!-- Upload supplier list (shown only on initial state) -->
+    <div v-if="messages.length <= 1 && !isThinking" class="chat-messages__suggestions">
+      <div class="chat-messages__upload">
         <q-icon name="fa-solid fa-file-upload" size="16px" color="blue-6" />
         <span>Upload your supplier list</span>
       </div>
@@ -28,7 +28,7 @@ import { useChat } from 'src/composables/useChat'
 import ChatMessage from './ChatMessage.vue'
 import ThinkingIndicator from './ThinkingIndicator.vue'
 
-const { messages, isThinking, hasConversation } = useChat()
+const { messages, isThinking } = useChat()
 
 const scrollContainer = ref(null)
 

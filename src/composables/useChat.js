@@ -13,8 +13,7 @@ const messages = ref([
 
 const isOpen = ref(false)
 const isThinking = ref(false)
-const hasConversation = ref(false)
-const showSuggestionsAfterError = ref(false)
+const isTypingResponse = ref(false)
 
 const suggestedQuestions = computed(() => Object.keys(MESSAGE_MOCK_MAP))
 
@@ -40,11 +39,12 @@ export function useChat() {
     isOpen.value = false
   }
 
+  function markTypingDone() {
+    isTypingResponse.value = false
+  }
+
   function sendMessage(text) {
     if (!text.trim() || isThinking.value) return
-
-    hasConversation.value = true
-    showSuggestionsAfterError.value = false
 
     // Add user message
     messages.value.push({
@@ -63,6 +63,7 @@ export function useChat() {
       // Simulate network delay before AI responds
       setTimeout(() => {
         isThinking.value = false
+        isTypingResponse.value = true
         messages.value.push({
           id: generateId(),
           role: 'assistant',
@@ -76,7 +77,7 @@ export function useChat() {
       isThinking.value = true
       setTimeout(() => {
         isThinking.value = false
-        showSuggestionsAfterError.value = true
+        isTypingResponse.value = true
         messages.value.push({
           id: generateId(),
           role: 'assistant',
@@ -93,12 +94,12 @@ export function useChat() {
     messages,
     isOpen,
     isThinking,
-    hasConversation,
-    showSuggestionsAfterError,
+    isTypingResponse,
     suggestedQuestions,
     toggleOpen,
     open,
     close,
     sendMessage,
+    markTypingDone,
   }
 }
