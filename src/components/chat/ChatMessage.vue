@@ -64,8 +64,8 @@ marked.setOptions({
 const typingDone = ref(!props.message.needsTyping)
 
 const { displayedText, isTyping, startTyping } = useTypingEffect({
-  speed: 10,
-  chunkSize: 3,
+  speed: 30,
+  chunkSize: 1,
   onUpdate: () => {
     emit('typing-update')
   },
@@ -149,6 +149,19 @@ onMounted(() => {
 }
 
 .chat-message__markdown {
+  // Cap heading sizes that may appear from partial markdown syntax
+  :deep(h1),
+  :deep(h2),
+  :deep(h3),
+  :deep(h4),
+  :deep(h5),
+  :deep(h6) {
+    font-size: 14px !important;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    line-height: 1.5;
+  }
+
   :deep(p) {
     margin: 0 0 8px 0;
     &:last-child {
@@ -171,6 +184,7 @@ onMounted(() => {
   }
 
   :deep(strong) {
+    font-size: inherit !important;
     font-weight: 600;
     color: $gray-900;
   }

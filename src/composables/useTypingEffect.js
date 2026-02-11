@@ -33,7 +33,14 @@ export function useTypingEffect(options = {}) {
     isTyping.value = true
 
     timerId = setInterval(() => {
-      const nextIndex = Math.min(currentIndex + chunkSize, fullText.length)
+      // Advance by chunkSize, then extend to the next word boundary
+      // to avoid splitting in the middle of markdown syntax like ** or []
+      let nextIndex = Math.min(currentIndex + chunkSize, fullText.length)
+      while (nextIndex < fullText.length && !/\s/.test(fullText[nextIndex])) {
+        nextIndex++
+      }
+      nextIndex = Math.min(nextIndex, fullText.length)
+
       displayedText.value = fullText.slice(0, nextIndex)
       currentIndex = nextIndex
 
