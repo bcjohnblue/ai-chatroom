@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick, onMounted } from 'vue'
+import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue'
 import { useChat } from 'src/composables/useChat'
 import ChatMessage from './ChatMessage.vue'
 import ThinkingIndicator from './ThinkingIndicator.vue'
@@ -31,29 +31,64 @@ import ThinkingIndicator from './ThinkingIndicator.vue'
 const { messages, isThinking } = useChat()
 
 const scrollContainer = ref(null)
+const userScrolledUp = ref(false)
+let lastScrollTop = 0
+let programmaticScroll = false
 
-function scrollToBottom() {
+function onScroll() {
+  const el = scrollContainer.value
+  if (!el) return
+
+  // Ignore scroll events caused by our own scrollToBottom
+  if (programmaticScroll) return
+
+  const currentScrollTop = el.scrollTop
+  // User scrolled back to bottom → resume auto-scroll
+  if (el.scrollHeight - currentScrollTop - el.clientHeight < 30) {
+    userScrolledUp.value = false
+  }
+  // User scrolled up → stop auto-scroll immediately
+  if (currentScrollTop < lastScrollTop) {
+    userScrolledUp.value = true
+  }
+  
+  lastScrollTop = currentScrollTop
+}
+
+function scrollToBottom(force = false) {
+  if (!force && userScrolledUp.value) return
   nextTick(() => {
     if (scrollContainer.value) {
+      programmaticScroll = true
       scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight
+      lastScrollTop = scrollContainer.value.scrollTop
+      // Reset flag after browser processes the scroll
+      requestAnimationFrame(() => {
+        programmaticScroll = false
+      })
     }
   })
 }
 
-// Watch for new messages and auto-scroll
+// New messages always scroll to bottom
 watch(
   () => messages.value.length,
   () => {
-    scrollToBottom()
+    scrollToBottom(true)
   }
 )
 
 watch(isThinking, () => {
-  scrollToBottom()
+  scrollToBottom(true)
 })
 
 onMounted(() => {
-  scrollToBottom()
+  scrollContainer.value?.addEventListener('scroll', onScroll)
+  scrollToBottom(true)
+})
+
+onUnmounted(() => {
+  scrollContainer.value?.removeEventListener('scroll', onScroll)
 })
 
 defineExpose({ scrollToBottom })
