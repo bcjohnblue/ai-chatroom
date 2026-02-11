@@ -1,0 +1,201 @@
+<template>
+  <div
+    class="chat-message"
+    :class="{
+      'chat-message--user': message.role === 'user',
+      'chat-message--assistant': message.role === 'assistant',
+    }"
+  >
+    <!-- Assistant avatar -->
+    <img
+      v-if="message.role === 'assistant'"
+      src="~assets/nitra-logo.svg"
+      alt="AI"
+      class="chat-message__avatar"
+    />
+
+    <!-- Message bubble -->
+    <div class="chat-message__bubble">
+      <!-- User message: plain text -->
+      <template v-if="message.role === 'user'">
+        {{ message.content }}
+      </template>
+
+      <!-- Assistant welcome message -->
+      <template v-else-if="message.isWelcome">
+        {{ message.content }}
+      </template>
+
+      <!-- Assistant message with typing effect + markdown -->
+      <template v-else>
+        <div
+          class="chat-message__markdown"
+          v-html="renderedHtml"
+        />
+      </template>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
+import { useTypingEffect } from 'src/composables/useTypingEffect'
+
+const props = defineProps({
+  message: {
+    type: Object,
+    required: true,
+  },
+})
+
+const emit = defineEmits(['typing-update', 'typing-complete'])
+
+// Configure marked for safe rendering
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+})
+
+const typingDone = ref(!props.message.needsTyping)
+
+const { displayedText, isTyping, startTyping } = useTypingEffect({
+  speed: 10,
+  chunkSize: 3,
+  onUpdate: () => {
+    emit('typing-update')
+  },
+  onComplete: () => {
+    typingDone.value = true
+    emit('typing-complete')
+  },
+})
+
+/**
+ * Pre-process markdown content:
+ * - Replace "[Product Link](url)" with "[View Product](url)"
+ * - Remove lines containing "[Image Link](...)"
+ */
+function preprocessContent(text) {
+  if (!text) return ''
+  return text
+    // Replace [Product Link](url) with [View Product](url)
+    .replace(/\[Product Link\]\((.*?)\)/g, '[View Product]($1)')
+    // Remove entire lines with [Image Link](...)
+    .replace(/^\s*-\s*\[Image Link\]\(.*?\)\s*$/gm, '')
+    // Clean up any leftover empty lines from removal
+    .replace(/\n{3,}/g, '\n\n')
+}
+
+// Compute rendered HTML from the current displayed text
+const renderedHtml = computed(() => {
+  // When typing is done, use preprocessed full content; during typing, displayedText is already preprocessed
+  const text = typingDone.value ? preprocessContent(props.message.content) : displayedText.value
+  if (!text) return ''
+
+  const processed = text
+
+  // Convert markdown to HTML
+  const rawHtml = marked.parse(processed)
+
+  // Sanitize and allow target attribute + opening in new tab
+  const clean = DOMPurify.sanitize(rawHtml, {
+    ADD_ATTR: ['target'],
+  })
+
+  // Make links open in new tab
+  return clean.replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ')
+})
+
+onMounted(() => {
+  if (props.message.needsTyping && props.message.role === 'assistant' && !props.message.isWelcome) {
+    // Type the preprocessed content so partial markdown is also clean
+    startTyping(preprocessContent(props.message.content))
+  }
+})
+</script>
+
+<style lang="scss" scoped>
+.chat-message {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.chat-message--user {
+  justify-content: flex-end;
+}
+
+.chat-message--assistant {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.chat-message__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.chat-message__bubble {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.chat-message--user .chat-message__bubble {
+  max-width: 75%;
+  background-color: $teal-700;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-message--assistant .chat-message__bubble {
+  max-width: 90%;
+  background-color: $gray-0;
+  color: $gray-900;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-message__markdown {
+  :deep(p) {
+    margin: 0 0 8px 0;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  :deep(ol),
+  :deep(ul) {
+    margin: 4px 0;
+    padding-left: 20px;
+  }
+
+  :deep(li) {
+    margin-bottom: 8px;
+
+    ul {
+      margin-top: 4px;
+    }
+  }
+
+  :deep(strong) {
+    font-weight: 600;
+    color: $gray-900;
+  }
+
+  :deep(a) {
+    color: $orange-500;
+    text-decoration: none;
+    font-weight: 500;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+</style>
