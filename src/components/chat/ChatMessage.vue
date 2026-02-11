@@ -68,6 +68,8 @@ const { displayedText, isTyping, startTyping } = useTypingEffect({
   },
   onComplete: () => {
     typingDone.value = true
+    // Mark message as typed so re-mount won't re-trigger animation
+    props.message.needsTyping = false
     emit('typing-complete')
   },
 })

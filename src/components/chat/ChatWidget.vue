@@ -1,6 +1,5 @@
 <template>
-  <transition name="chat-widget">
-    <div v-if="isOpen" class="chat-widget">
+  <div v-show="isOpen" class="chat-widget">
       <ChatHeader @close="close" />
       <ChatMessages ref="chatMessagesRef" />
 
@@ -21,8 +20,7 @@
         :disabled="isThinking"
         @send="handleSend"
       />
-    </div>
-  </transition>
+  </div>
 </template>
 
 <script setup>
@@ -100,37 +98,6 @@ function handleSuggestionClick(question) {
   &:hover {
     background: $teal-50;
     border-color: $teal-100;
-  }
-}
-
-// Transition
-.chat-widget-enter-active {
-  animation: chatSlideIn 0.25s ease-out;
-}
-
-.chat-widget-leave-active {
-  animation: chatSlideOut 0.2s ease-in;
-}
-
-@keyframes chatSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes chatSlideOut {
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
   }
 }
 
