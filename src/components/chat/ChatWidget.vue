@@ -34,6 +34,7 @@ const {
   isOpen,
   isThinking,
   hasConversation,
+  showSuggestionsAfterError,
   suggestedQuestions,
   close,
   sendMessage,
@@ -42,7 +43,10 @@ const {
 const chatInputRef = ref(null)
 const chatMessagesRef = ref(null)
 
-const showSuggestions = computed(() => !hasConversation.value && !isThinking.value)
+const showSuggestions = computed(() => {
+  if (isThinking.value) return false
+  return !hasConversation.value || showSuggestionsAfterError.value
+})
 
 function handleSend(text) {
   sendMessage(text)
