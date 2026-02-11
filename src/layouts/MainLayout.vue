@@ -8,19 +8,16 @@
     <ChatWidget />
 
     <!-- Ask Nitra AI FAB Button -->
-    <transition name="fab">
-      <q-btn
-        v-if="!isOpen"
-        class="nitra-fab"
-        unelevated
-        no-caps
-        rounded
-        @click="open"
-      >
-        <q-icon name="fa-solid fa-pen" size="14px" class="q-mr-sm" />
-        Ask Nitra AI
-      </q-btn>
-    </transition>
+    <q-btn
+      class="nitra-fab"
+      unelevated
+      no-caps
+      rounded
+      @click="toggleOpen"
+    >
+      <q-icon name="fa-solid fa-pen" size="14px" class="q-mr-sm" />
+      Ask Nitra AI
+    </q-btn>
   </q-layout>
 </template>
 
@@ -28,7 +25,7 @@
 import ChatWidget from 'components/chat/ChatWidget.vue'
 import { useChat } from 'src/composables/useChat'
 
-const { isOpen, open } = useChat()
+const { toggleOpen } = useChat()
 </script>
 
 <style lang="scss" scoped>
@@ -52,33 +49,4 @@ const { isOpen, open } = useChat()
   }
 }
 
-.fab-enter-active {
-  animation: fabIn 0.2s ease-out;
-}
-
-.fab-leave-active {
-  animation: fabOut 0.15s ease-in;
-}
-
-@keyframes fabIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes fabOut {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-}
 </style>
