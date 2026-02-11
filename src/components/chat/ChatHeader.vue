@@ -18,7 +18,7 @@
       flat
       round
       dense
-      icon="close"
+      icon="fa-solid fa-xmark"
       color="white"
       size="sm"
       class="chat-header__close"
