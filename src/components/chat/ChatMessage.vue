@@ -74,32 +74,13 @@ const { displayedText, isTyping, startTyping } = useTypingEffect({
   },
 })
 
-/**
- * Pre-process markdown content:
- * - Replace "[Product Link](url)" with "[View Product](url)"
- * - Remove lines containing "[Image Link](...)"
- */
-function preprocessContent(text) {
-  if (!text) return ''
-  return text
-    // Replace [Product Link](url) with [View Product](url)
-    .replace(/\[Product Link\]\((.*?)\)/g, '[View Product]($1)')
-    // Remove entire lines with [Image Link](...)
-    .replace(/^\s*-\s*\[Image Link\]\(.*?\)\s*$/gm, '')
-    // Clean up any leftover empty lines from removal
-    .replace(/\n{3,}/g, '\n\n')
-}
-
 // Compute rendered HTML from the current displayed text
 const renderedHtml = computed(() => {
-  // When typing is done, use preprocessed full content; during typing, displayedText is already preprocessed
-  const text = typingDone.value ? preprocessContent(props.message.content) : displayedText.value
+  const text = typingDone.value ? props.message.content : displayedText.value
   if (!text) return ''
 
-  const processed = text
-
   // Convert markdown to HTML
-  const rawHtml = marked.parse(processed)
+  const rawHtml = marked.parse(text)
 
   // Sanitize and allow target attribute + opening in new tab
   const clean = DOMPurify.sanitize(rawHtml, {
@@ -112,8 +93,7 @@ const renderedHtml = computed(() => {
 
 onMounted(() => {
   if (props.message.needsTyping && props.message.role === 'assistant' && !props.message.isWelcome) {
-    // Type the preprocessed content so partial markdown is also clean
-    startTyping(preprocessContent(props.message.content))
+    startTyping(props.message.content)
   }
 })
 </script>
