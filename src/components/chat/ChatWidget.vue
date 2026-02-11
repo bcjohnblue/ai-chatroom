@@ -61,6 +61,7 @@ function handleSuggestionClick(question) {
   bottom: 80px;
   right: 24px;
   width: 440px;
+  height: 600px;
   max-height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
@@ -139,6 +140,7 @@ function handleSuggestionClick(question) {
     width: calc(100vw - 16px);
     right: 8px;
     bottom: 70px;
+    height: calc(100vh - 90px);
     max-height: calc(100vh - 90px);
   }
 }
