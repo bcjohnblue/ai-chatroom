@@ -31,10 +31,6 @@ export function useChat() {
     isOpen.value = !isOpen.value
   }
 
-  function open() {
-    isOpen.value = true
-  }
-
   function close() {
     isOpen.value = false
   }
@@ -97,7 +93,6 @@ export function useChat() {
     isTypingResponse,
     suggestedQuestions,
     toggleOpen,
-    open,
     close,
     sendMessage,
     markTypingDone,

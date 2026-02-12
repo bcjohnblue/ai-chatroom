@@ -63,7 +63,7 @@ marked.setOptions({
 
 const typingDone = ref(!props.message.needsTyping)
 
-const { displayedText, isTyping, startTyping } = useTypingEffect({
+const { displayedText, startTyping } = useTypingEffect({
   speed: 30,
   chunkSize: 1,
   onUpdate: () => {

@@ -1,7 +1,7 @@
 <template>
   <div v-show="isOpen" class="chat-widget">
       <ChatHeader @close="close" />
-      <ChatMessages ref="chatMessagesRef" />
+      <ChatMessages />
 
       <!-- Suggested question buttons -->
       <div v-if="showSuggestions" class="chat-widget__suggestions">
@@ -16,7 +16,6 @@
       </div>
 
       <ChatInput
-        ref="chatInputRef"
         :disabled="isThinking || isTypingResponse"
         @send="handleSend"
       />
@@ -24,7 +23,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useChat } from 'src/composables/useChat'
 import ChatHeader from './ChatHeader.vue'
 import ChatMessages from './ChatMessages.vue'
@@ -38,9 +37,6 @@ const {
   close,
   sendMessage,
 } = useChat()
-
-const chatInputRef = ref(null)
-const chatMessagesRef = ref(null)
 
 const showSuggestions = computed(() => !isThinking.value && !isTypingResponse.value)
 
