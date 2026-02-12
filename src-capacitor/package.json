@@ -1,0 +1,11 @@
+{
+  "name": "ai-chatroom",
+  "version": "0.0.1",
+  "description": "This is the basic setup for the AI Chatroom",
+  "private": true,
+  "dependencies": {
+    "@capacitor/android": "^8.0.2",
+    "@capacitor/cli": "latest",
+    "@capacitor/core": "latest"
+  }
+}

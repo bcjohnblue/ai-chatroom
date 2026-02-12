@@ -1,0 +1,8 @@
+{
+  "appId": "com.bcjohn.aichatroom",
+  "appName": "aichatroom",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

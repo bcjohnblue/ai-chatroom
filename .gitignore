@@ -17,6 +17,16 @@ node_modules
 /src-capacitor/www
 /src-capacitor/node_modules
 
+# Capacitor Android build artifacts
+/src-capacitor/android/.gradle
+/src-capacitor/android/app/build
+/src-capacitor/android/app/src/main/assets/public
+/src-capacitor/android/app/src/main/assets/capacitor.config.json
+/src-capacitor/android/app/src/main/assets/capacitor.plugins.json
+/src-capacitor/android/build
+/src-capacitor/android/local.properties
+*.keystore
+
 # Log files
 npm-debug.log*
 yarn-debug.log*
