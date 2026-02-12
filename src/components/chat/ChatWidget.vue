@@ -17,7 +17,7 @@
 
       <ChatInput
         ref="chatInputRef"
-        :disabled="isThinking"
+        :disabled="isThinking || isTypingResponse"
         @send="handleSend"
       />
   </div>

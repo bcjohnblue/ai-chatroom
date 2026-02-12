@@ -26,11 +26,12 @@
           unelevated
           size="sm"
           class="chat-input__send"
-          :class="{ 'chat-input__send--active': inputText.trim() }"
+          :class="{ 'chat-input__send--active': inputText.trim() && !disabled }"
           :disable="!inputText.trim() || disabled"
           @click="handleSend"
         >
-          <q-icon name="fa-solid fa-chevron-right" size="12px" color="white" />
+          <q-spinner v-if="disabled" size="14px" color="white" />
+          <q-icon v-else name="fa-solid fa-chevron-right" size="12px" color="white" />
         </q-btn>
       </div>
     </div>
