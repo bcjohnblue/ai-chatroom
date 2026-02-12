@@ -136,8 +136,8 @@ onMounted(() => {
 
 .chat-message--user .chat-message__bubble {
   max-width: 75%;
-  background-color: $teal-700;
-  color: white;
+  background-color: $teal-100;
+  color: $gray-900;
   border-bottom-right-radius: 4px;
 }
 

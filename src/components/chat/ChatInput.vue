@@ -26,7 +26,6 @@
           unelevated
           size="sm"
           class="chat-input__send"
-          :class="{ 'chat-input__send--active': inputText.trim() && !disabled }"
           :disable="!inputText.trim() || disabled"
           @click="handleSend"
         >
@@ -125,11 +124,7 @@ defineExpose({ setText, focus })
 .chat-input__send {
   width: 32px;
   height: 32px;
-  background-color: $teal-400 !important;
+  background-color: $teal-700 !important;
   transition: background-color 0.2s;
-
-  &--active {
-    background-color: $teal-700 !important;
-  }
 }
 </style>
