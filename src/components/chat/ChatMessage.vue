@@ -142,7 +142,7 @@ onMounted(() => {
 }
 
 .chat-message--assistant .chat-message__bubble {
-  max-width: 90%;
+  max-width: 75%;
   background-color: $gray-0;
   color: $gray-900;
   border-bottom-left-radius: 4px;
